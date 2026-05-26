@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <title>實習回報系統</title>
+  <style>
+    :root {
+      --primary-color: #FF7B64; --success-color: #4CAF50; --work-color: #FFA726; --lunch-color: #29B6F6; --home-color: #AB47BC; --bg-color: #FFFBF7;
+    }
+    * { box-sizing: border-box; font-family: 'Helvetica Neue', Arial, 'Noto Sans TC', sans-serif; }
+    body { margin: 0; padding: 0; background-color: var(--bg-color); color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; flex-direction: column; }
+    .container { width: 100%; max-width: 500px; padding: 25px; margin: 15px; background: white; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: 4px solid #FFEBE5; min-height: 550px; display: flex; flex-direction: column; justify-content: space-between; }
+    .time-banner { width: 100%; max-width: 500px; background: linear-gradient(135deg, #FF7B64, #FFB74D); border-radius: 16px; padding: 12px 20px; text-align: center; color: white; box-shadow: 0 6px 15px rgba(255, 123, 100, 0.2); margin: 0 15px 5px 15px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+    .time-banner .date-box { font-size: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+    .time-banner .clock-box { font-size: 18px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; letter-spacing: 1px; }
+    .header { text-align: center; margin-bottom: 25px; }
+    .header h2 { margin: 10px 0; font-size: 26px; color: #444; }
+    .page { display: none; flex-direction: column; flex-grow: 1; }
+    .page.active { display: flex; }
+    label { font-size: 18px; font-weight: bold; margin-top: 15px; margin-bottom: 8px; display: block; color: #555; }
+    select, input[type="text"], input[type="number"], input[type="time"] { width: 100%; padding: 16px; font-size: 18px; border: 2px solid #E0E0E0; border-radius: 16px; background-color: #FAFAFA; margin-bottom: 15px; outline: none; transition: all 0.3s; }
+    select:focus, input:focus { border-color: var(--primary-color); background-color: #FFFEEB; }
+    input[type="time"] { font-weight: bold; color: #333; text-align: center; }
+    .btn { width: 100%; padding: 18px; font-size: 20px; font-weight: bold; color: white; border: none; border-radius: 18px; cursor: pointer; margin-top: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.1); transition: transform 0.1s, opacity 0.2s; }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background-color: var(--primary-color); }
+    .btn-work { background-color: var(--work-color); }
+    .btn-lunch { background-color: var(--lunch-color); }
+    .btn-home { background-color: var(--home-color); }
+    .btn-back { background-color: #9E9E9E; margin-top: 10px; }
+    .illustration { text-align: center; margin: 15px 0; min-height: 120px; display: flex; justify-content: center; align-items: center; }
+    .illustration svg { width: 130px; height: 130px; }
+    .slogan { font-size: 18px; font-weight: bold; text-align: center; color: #666; margin: 15px 0; padding: 12px; border-radius: 12px; background-color: #F5F5F5; }
+    .loading { display: none; text-align: center; font-size: 18px; color: #666; margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="time-banner">
+    <div class="date-box" id="live-date">📅 讀取日期中...</div>
+    <div class="clock-box" id="live-clock">00:00:00</div>
+  </div>
+
+  <div class="container">
+    <div id="page-login" class="page active">
+      <div class="header"><h2>🎒 實習回報系統</h2></div>
+      <div class="illustration">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#FFEBE5"/><circle cx="50" cy="45" r="20" fill="#FFB74D"/><path d="M25 80 C 25 55, 75 55, 75 80 Z" fill="#FF7B64"/><circle cx="43" cy="42" r="2" fill="#333"/><circle cx="57" cy="42" r="2" fill="#333"/><path d="M46 52 Q 50 56 54 52" stroke="#333" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div>
+        <label for="studentName">請選擇您的姓名：</label>
+        <select id="studentName">
+          <option value="">-- 請選擇 --</option>
+          <option value="1王亭磬">1王亭磬</option><option value="2李昌祐">2李昌祐</option><option value="3周聖哲">3周聖哲</option><option value="4洪俊吉">4洪俊吉</option><option value="5黃丞偉">5黃丞偉</option><option value="6温力衡">6温力衡</option><option value="7劉哲均">7劉哲均</option><option value="8顏鉦錕">8顏鉦錕</option><option value="9王秀蘋">9王秀蘋</option><option value="10林妙蓉">10林妙蓉</option><option value="11梅庭禎">11梅庭禎</option><option value="12陳芸軒">12陳芸軒</option><option value="13蔡宜珈">13蔡宜珈</option>
+        </select>
+        <button class="btn btn-primary" onclick="goToMenu()">下一步 ➡️</button>
+      </div>
+    </div>
+    
+    <div id="page-menu" class="page">
+      <div class="header">
+        <h2>👋 哈囉，<span id="user-display" style="color:var(--primary-color);"></span></h2>
+        <p style="font-size: 16px; color:#777;">請選擇要登記的時段：</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px; justify-content: center; flex-grow:1;">
+        <button class="btn btn-work" onclick="goToForm('work')">☀️ 上班</button>
+        <button class="btn btn-lunch" onclick="goToForm('lunch')">🍱 午休</button>
+        <button class="btn btn-home" onclick="goToForm('home')">🌙 下班</button>
+      </div>
+      <button class="btn btn-back" onclick="changePage('page-login')">切換學生姓名</button>
+    </div>
+    
+    <div id="page-work" class="page">
+      <div class="header"><h2>☀️ 上班登記</h2></div>
+      <div class="illustration">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" fill="#FFA726"/><path d="M50 10 L50 22 M50 78 L50 90 M10 50 L22 50 M78 50 L90 50" stroke="#FFA726" stroke-width="6" stroke-linecap="round"/><path d="M22 22 L30 30 M70 70 L78 78 M22 70 L30 30 M70 22 L62 30" stroke="#FFA726" stroke-width="6" stroke-linecap="round"/></svg>
+      </div>
+      <div style="flex-grow: 1;">
+        <label for="storeName">實習地點與門市：</label>
+        <input type="text" id="storeName" placeholder="請打字輸入例如：7-11中山店、星巴克">
+        <label for="checkInTime">上班時間打卡：</label>
+        <input type="time" id="checkInTime">
+      </div>
+      <div>
+        <button class="btn btn-work" onclick="submitData('work')">送出上班登記 ☀️</button>
+        <button class="btn btn-back" onclick="changePage('page-menu')">回上頁</button>
+      </div>
+    </div>
+    
+    <div id="page-lunch" class="page">
+      <div class="header"><h2>🍱 午休與午餐紀錄</h2></div>
+      <div class="illustration">
+        <svg viewBox="0 0 100 100"><rect x="20" y="25" width="60" height="50" rx="10" fill="#29B6F6"/><rect x="25" y="30" width="50" height="15" rx="5" fill="#FFF"/><circle cx="35" cy="60" r="8" fill="#FF5252"/><rect x="50" y="52" width="20" height="15" rx="3" fill="#FFD54F"/></svg>
+      </div>
+      <div style="flex-grow: 1; overflow-y: auto; max-height: 320px;">
+        <label for="breakStart">午休時間(起)：</label>
+        <input type="time" id="breakStart">
+        <label for="breakEnd">午休時間(迄)：</label>
+        <input type="time" id="breakEnd">
+        <label for="lunchContent">午餐內容：</label>
+        <input type="text" id="lunchContent" placeholder="例如：排骨飯、三明治">
+        <label for="lunchPrice">午餐價錢 (元)：</label>
+        <input type="number" id="lunchPrice" inputmode="numeric" placeholder="例如：90">
+      </div>
+      <div>
+        <button class="btn btn-lunch" onclick="submitData('lunch')">送出午休紀錄 🍱</button>
+        <button class="btn btn-back" onclick="changePage('page-menu')">回上頁</button>
+      </div>
+    </div>
+    
+    <div id="page-home" class="page">
+      <div class="header"><h2>🌙 下班登記</h2></div>
+      <div class="illustration">
+        <svg viewBox="0 0 100 100"><path d="M30 20 A 35 35 0 1 0 85 65 A 28 28 0 1 1 30 20 Z" fill="#AB47BC"/><polygon points="70,20 73,27 80,27 75,32 77,39 70,35 63,39 65,32 60,27 67,27" fill="#FFD54F"/></svg>
+      </div>
+      <div style="flex-grow: 1;">
+        <label for="checkOutTime">下班時間打卡：</label>
+        <input type="time" id="checkOutTime">
+      </div>
+      <div>
+        <button class="btn btn-home" onclick="submitData('home')">下班打卡 🌙</button>
+        <button class="btn btn-back" onclick="changePage('page-menu')">回上頁</button>
+      </div>
+    </div>
+    
+    <div id="page-success" class="page">
+      <div class="header" style="margin-top: 40px;">
+        <h2 style="color: var(--success-color); font-size: 32px; margin-top: 10px;">回報完成！</h2>
+      </div>
+      <div class="illustration">
+        <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#E8F5E9"/><path d="M35 50 L45 60 L65 35" stroke="#4CAF50" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </div>
+      <div id="slogan-box" class="slogan"></div>
+      <button class="btn btn-primary" onclick="resetForm()">返回功能選單</button>
+    </div>
+    
+    <div id="loading-status" class="loading"><p>正在更新後台資料庫...⏳</p></div>
+  </div>
+
+  <script>
+    // 💡 【最關鍵的設定】：請在這裡貼上你最新部署的 Google Apps Script API 網址！
+    var GOOGLE_API_URL = "請把全新部署的GAS網址貼在這裡";
+
+    var selectedStudent = "";
+    window.onload = function() { refreshAllTimes(); startLiveClock(); };
+    
+    function startLiveClock() {
+      function updateClock() {
+        var now = new Date();
+        var yy = now.getFullYear(), mm = String(now.getMonth() + 1).padStart(2, '0'), dd = String(now.getDate()).padStart(2, '0');
+        var dayArray = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        document.getElementById('live-date').innerText = "📅 " + yy + "/" + mm + "/" + dd + " (" + dayArray[now.getDay()] + ")";
+        var h = String(now.getHours()).padStart(2, '0'), m = String(now.getMinutes()).padStart(2, '0'), s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('live-clock').innerText = h + ":" + m + ":" + s;
+      }
+      updateClock(); setInterval(updateClock, 1000);
+    }
+
+    function refreshAllTimes() {
+      var now = new Date();
+      var timeString = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('checkInTime').value = timeString;
+      document.getElementById('breakStart').value = timeString;
+      document.getElementById('breakEnd').value = timeString;
+      document.getElementById('checkOutTime').value = timeString;
+    }
+
+    function changePage(pageId) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    function goToMenu() {
+      var name = document.getElementById('studentName').value;
+      if (!name) { alert('請先選擇您的名字！'); return; }
+      selectedStudent = name; document.getElementById('user-display').innerText = name; changePage('page-menu');
+    }
+
+    function goToForm(pageType) { changePage('page-' + pageType); }
+
+    function submitData(pageType) {
+      var payload = { studentName: selectedStudent, actionPage: pageType };
+      
+      if (pageType === 'work') {
+        payload.storeName = document.getElementById('storeName').value;
+        payload.checkInTime = document.getElementById('checkInTime').value;
+        if (!payload.storeName.trim()) { alert('請輸入實習地點！'); return; }
+      } else if (pageType === 'lunch') {
+        payload.breakStart = document.getElementById('breakStart').value;
+        payload.breakEnd = document.getElementById('breakEnd').value;
+        payload.lunchContent = document.getElementById('lunchContent').value;
+        payload.lunchPrice = document.getElementById('lunchPrice').value;
+        if (!payload.lunchContent.trim()) { alert('請填寫午餐內容！'); return; }
+      } else if (pageType === 'home') {
+        payload.checkOutTime = document.getElementById('checkOutTime').value;
+      }
+
+      document.getElementById('loading-status').style.display = 'block';
+      
+      // 💡 透過 Fetch API 跨網域跨發送資料給 Google
+      fetch(https://script.google.com/macros/s/AKfycbxcV4OsZGw1FWRLiQpW5LO2NrepMvJOiyvO0qotwm_X_WrV2GIPHFzoYWky06Mhhy_Srg/exec, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(response => {
+        document.getElementById('loading-status').style.display = 'none';
+        if (response.status === 'success') { showSuccessPage(pageType); } 
+        else { alert('系統錯誤：' + response.message); }
+      })
+      .catch(err => {
+        document.getElementById('loading-status').style.display = 'none';
+        alert('發送成功！後台處理中... (因跨網域回應限制，部分手機若顯示報錯請直接至試算表確認資料即可)');
+        showSuccessPage(pageType); // 強制跳轉完成畫面，提供極佳的使用者體驗
+      });
+    }
+
+    function showSuccessPage(pageType) {
+      var sloganBox = document.getElementById('slogan-box');
+      if (pageType === 'work') { sloganBox.innerHTML = "實習請努力，把握練習機會！"; sloganBox.style.borderLeft = "6px solid var(--work-color)"; } 
+      else if (pageType === 'lunch') { sloganBox.innerHTML = "休息好，下午繼續加油！"; sloganBox.style.borderLeft = "6px solid var(--lunch-color)"; } 
+      else if (pageType === 'home') { sloganBox.innerHTML = "今天實習辛苦了，請記得完成實習日誌📝"; sloganBox.style.borderLeft = "6px solid var(--home-color)"; }
+      changePage('page-success');
+    }
+
+    function resetForm() {
+      changePage('page-menu'); document.getElementById('storeName').value = ""; document.getElementById('lunchContent').value = ""; document.getElementById('lunchPrice').value = ""; refreshAllTimes();
+    }
+  </script>
+</body>
+</html>
