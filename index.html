@@ -140,7 +140,7 @@
 
   <script>
     // 💡 【最關鍵的設定】：請在這裡貼上你最新部署的 Google Apps Script API 網址！
-    var GOOGLE_API_URL = "請把全新部署的GAS網址貼在這裡";
+    var GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycbxcV4OsZGw1FWRLiQpW5LO2NrepMvJOiyvO0qotwm_X_WrV2GIPHFzoYWky06Mhhy_Srg/exec";
 
     var selectedStudent = "";
     window.onload = function() { refreshAllTimes(); startLiveClock(); };
@@ -199,7 +199,7 @@
       document.getElementById('loading-status').style.display = 'block';
       
       // 💡 透過 Fetch API 跨網域跨發送資料給 Google
-      fetch(https://script.google.com/macros/s/AKfycbxcV4OsZGw1FWRLiQpW5LO2NrepMvJOiyvO0qotwm_X_WrV2GIPHFzoYWky06Mhhy_Srg/exec, {
+      fetch(GOOGLE_API_URL, {
         method: 'POST',
         body: JSON.stringify(payload)
       })
